@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,7 +9,13 @@ public class GaneNabager : MonoBehaviour
     public TextMeshProUGUI response;
     public TextMeshProUGUI AIGuess;
     public TMP_InputField inputField;
+    //Buttons
     public GameObject play;
+    public GameObject smaller;
+    public GameObject bigger;
+    public GameObject playAgain;
+    //text
+    public GameObject endText;
 
     // Jak gracz kliknie Mniejsza liczba, to zgadniêta liczba to currectMax
     // Jak gracz kliknie Wiêksza liczba, to zgadniêta liczba to currentMin
@@ -21,7 +28,9 @@ public class GaneNabager : MonoBehaviour
     public int currentMin;
     public int currentMax;
 
+    //Zmienne
     public int aiguess;
+    public int zgadula;
 
     void Start()
     {
@@ -40,63 +49,67 @@ public class GaneNabager : MonoBehaviour
     }
 
 
-    // Update is called once per frame
-    void Update()
+    public void GetInput(string input)
     {
-        
-    }
-
-    public void GetInput(string input,int newai)
-    {
+        inputField.gameObject.SetActive(!true);
         Debug.Log("Liczba do zgadniêcia "+input);
-
         response.text = "The number is "+input;
-        inputField.text = "";
-
-        //Ruch bota
-        newai = currentMax + currentMin / 2;
-        AIGuess.text = "My guess is " + newai;
-
-
-        /*if (int.TryParse(input, out int result))
-        {
-            if(result > randomNumber)
-            {
-                response.text = "Liczba jest wiêksza";
-                Debug.Log("result jest wiekszy");
-            }
-            else if (result<randomNumber)
-            {
-                response.text = "Liczba jest mniejsza";
-                Debug.Log("result jest mniejszy ");
-            }
-            else if (result == randomNumber)
-            {
-                response.text = "Zgad³eœ!";
-                Debug.Log("result jest rowny");
-                play.gameObject.SetActive(true);
-            }
-        }*/
-
-
+        zgadula = Convert.ToInt32(input);
+        RuchBota();
     }
 
+    public void RuchBota()
+    {
+        //Ruch bota
+        int newai = 0;
+        newai = (currentMax + currentMin)/ 2;
+        AIGuess.text = "AI guess is " + newai;
+        aiguess = newai;
+    }
 
     //Nowe currenty
-    public void NewCurrentMin(int newai)
+    public void NewCurrentMin()
     {
-        
-        currentMax = newai;
+        currentMin = aiguess;
+        RuchBota();
         Debug.Log("Temp min to " + currentMin);
-        GetInput(newai);
-
+        CheckWin();
     }
-    public void NewCurrentMax(int newai)
+    public void NewCurrentMax()
     {
-        GetInput();
-        currentMin = newai;
+        currentMax = aiguess;
+        RuchBota();
         Debug.Log("Temp maks to " + currentMax);
-        GetInput();
+        CheckWin();
+    }
+
+    public void CheckWin()
+    {
+        if (aiguess == zgadula)
+        {
+            //Wy³¹czenie przycisków
+            bigger.SetActive(false);
+            smaller.SetActive(false);
+            inputField.gameObject.SetActive(false);
+            endText.SetActive(true);
+            playAgain.SetActive(true);
+
+        }
+    }
+
+    public void egejn()
+    {
+        bigger.SetActive(!false);
+        smaller.SetActive(!false);
+        inputField.gameObject.SetActive(!false);
+        endText.SetActive(!true);
+        playAgain.SetActive(!true);
+
+        currentMax = maks;
+        currentMin = min;
+
+        AIGuess.text = "I'll beat you again! >:3";
+        response.text = "So again!";
     }
 
 }
